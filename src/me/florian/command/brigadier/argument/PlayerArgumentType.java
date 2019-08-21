@@ -1,13 +1,12 @@
 package me.florian.command.brigadier.argument;
 
-import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import me.florian.command.brigadier.BrigadierCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -24,7 +23,7 @@ public class PlayerArgumentType implements ArgumentType<Player> {
         Player player = Bukkit.getPlayer(stringReader.readString());
 
         if (player == null) {
-            throw new SimpleCommandExceptionType(new LiteralMessage("Could not find a player with that name!")).create();
+            throw BrigadierCommand.literal("Could not find a player with that name!");
         }
 
         return player;

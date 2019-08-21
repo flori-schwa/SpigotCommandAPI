@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
  * This throwable class represents a {@link RuntimeException} involving the execution of {@link me.florian.command.AbstractCommand}'s
  * If an Exception of this Type is thrown during the execution of a {@link me.florian.command.AbstractCommand} ({@link me.florian.command.AbstractCommand#execute(CommandSender, ArgumentIterator)}),
  * the execution will stop and the {@link Exception#getMessage()} will be printed to the {@link me.florian.command.AbstractCommand}'s {@link CommandSender}.
- *
+ * <p>
  * There are two Types of {@link CommandException}s: severe and mild.
  * <ul>
  *     <li>Mild {@link CommandException}s will only send {@link Exception#getMessage()} to the {@link CommandSender}.</li>
@@ -17,6 +17,24 @@ import org.bukkit.command.CommandSender;
 public class CommandException extends RuntimeException {
 
     private final boolean severe;
+
+    private CommandException(String message, boolean severe) {
+        super(message);
+
+        this.severe = severe;
+    }
+
+    private CommandException(String message, Throwable cause, boolean severe) {
+        super(message, cause);
+
+        this.severe = severe;
+    }
+
+    private CommandException(Throwable cause, boolean severe) {
+        super(cause);
+
+        this.severe = severe;
+    }
 
     public static CommandException severeException(String message) {
         return new CommandException(message, true);
@@ -40,24 +58,6 @@ public class CommandException extends RuntimeException {
 
     public static CommandException mildException(Throwable cause) {
         return new CommandException(cause, false);
-    }
-
-    private CommandException(String message, boolean severe) {
-        super(message);
-
-        this.severe = severe;
-    }
-
-    private CommandException(String message, Throwable cause, boolean severe) {
-        super(message, cause);
-
-        this.severe = severe;
-    }
-
-    private CommandException(Throwable cause, boolean severe) {
-        super(cause);
-
-        this.severe = severe;
     }
 
     /**

@@ -1,4 +1,5 @@
 package me.florian.command;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.function.Function;
@@ -25,6 +26,7 @@ public class ArgumentIterator implements Iterator<String> {
 
     /**
      * Peeks the next Argument without consuming it.
+     *
      * @return The next argument
      */
     public String peek() {
@@ -61,8 +63,9 @@ public class ArgumentIterator implements Iterator<String> {
 
     /**
      * Gets the next argument and applies it to the given {@link Function}
+     *
      * @param function The {@link Function} the argument should be applied on
-     * @param <P> The resulting Type of the {@link Function}
+     * @param <P>      The resulting Type of the {@link Function}
      * @return The result of the {@link Function} applied to {@link ArgumentIterator#next()}
      */
     public <P> P parseNext(Function<String, P> function) {
@@ -102,6 +105,7 @@ public class ArgumentIterator implements Iterator<String> {
 
     /**
      * Set the cursors position
+     *
      * @param position The new position of the cursor
      * @return The argument at the new position
      */

@@ -1,13 +1,12 @@
 package me.florian.command.brigadier.argument;
 
-import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import me.florian.command.brigadier.BrigadierCommand;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -30,7 +29,7 @@ public class EnumArgumentType<E extends Enum<E>> implements ArgumentType<E> {
         try {
             return Enum.valueOf(clazz, stringReader.readString().toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new SimpleCommandExceptionType(new LiteralMessage(e.getMessage())).create();
+            throw BrigadierCommand.literal(e.getMessage());
         }
     }
 

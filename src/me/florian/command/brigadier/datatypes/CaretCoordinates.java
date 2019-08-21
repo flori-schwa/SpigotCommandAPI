@@ -18,8 +18,6 @@ public class CaretCoordinates extends Coordinates {
 
     private static Method METHOD_SIN, METHOD_COS;
 
-    private final double left, up, forwards;
-
     static {
         try {
 
@@ -33,6 +31,18 @@ public class CaretCoordinates extends Coordinates {
         } catch (ClassNotFoundException | NoSuchMethodException e) {
             e.printStackTrace();
         }
+    }
+
+    private final double left, up, forwards;
+
+    public CaretCoordinates(StringReader stringReader) throws CommandSyntaxException {
+        this.left = parseCaret(stringReader);
+        stringReader.skipWhitespace();
+        this.up = parseCaret(stringReader);
+        stringReader.skipWhitespace();
+        this.forwards = parseCaret(stringReader);
+
+        System.out.println(this);
     }
 
     private static float sin(float x) {
@@ -49,16 +59,6 @@ public class CaretCoordinates extends Coordinates {
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public CaretCoordinates(StringReader stringReader) throws CommandSyntaxException {
-        this.left = parseCaret(stringReader);
-        stringReader.skipWhitespace();
-        this.up = parseCaret(stringReader);
-        stringReader.skipWhitespace();
-        this.forwards = parseCaret(stringReader);
-
-        System.out.println(this);
     }
 
     private double parseCaret(StringReader reader) throws CommandSyntaxException {

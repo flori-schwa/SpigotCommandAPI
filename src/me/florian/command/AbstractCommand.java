@@ -3,7 +3,6 @@ package me.florian.command;
 import me.florian.command.exception.CommandException;
 import me.florian.command.result.*;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -25,9 +24,6 @@ public abstract class AbstractCommand {
     private static Field simpleCommandMapField;
     private static Constructor<PluginCommand> pluginCommandConstructor;
 
-    private final String name;
-    private final Plugin plugin;
-
     static {
         try {
             simpleCommandMapField = SimplePluginManager.class.getDeclaredField("commandMap");
@@ -39,6 +35,9 @@ public abstract class AbstractCommand {
             e.printStackTrace();
         }
     }
+
+    private final String name;
+    private final Plugin plugin;
 
     public AbstractCommand(Plugin plugin, String name) {
         this.plugin = plugin;
@@ -145,8 +144,8 @@ public abstract class AbstractCommand {
     /**
      * Executes the command, returning the result
      *
-     * @param sender    The Source of the command
-     * @param args The arguments given to the commmand
+     * @param sender The Source of the command
+     * @param args   The arguments given to the commmand
      * @return The {@link CommandResult} of the command. May be null
      */
     public abstract CommandResult execute(CommandSender sender, ArgumentIterator args);

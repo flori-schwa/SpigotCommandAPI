@@ -24,10 +24,6 @@ public class BrigadierCommand<C extends CommandSender> extends AbstractCommand {
     private final CommandDispatcher<C> commandDispatcher;
     private final Class<C> cClass;
 
-    public static CommandSyntaxException literal(String message) {
-        return new SimpleCommandExceptionType(new LiteralMessage(message)).create();
-    }
-
     public BrigadierCommand(Plugin plugin, LiteralArgumentBuilder<C> literalArgumentBuilder, Class<C> cClass) {
         super(plugin, literalArgumentBuilder.getLiteral());
 
@@ -35,6 +31,10 @@ public class BrigadierCommand<C extends CommandSender> extends AbstractCommand {
 
         this.commandDispatcher = new CommandDispatcher<>();
         this.commandDispatcher.register(literalArgumentBuilder);
+    }
+
+    public static CommandSyntaxException literal(String message) {
+        return new SimpleCommandExceptionType(new LiteralMessage(message)).create();
     }
 
     private String getFullInput(String[] args) {

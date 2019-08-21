@@ -12,35 +12,8 @@ import java.util.function.DoubleConsumer;
 
 public class WorldCoordinates extends Coordinates {
 
-    private static class CoordinateParseResult {
-        final double coordinate;
-        final boolean relative;
-
-        private static double parseDouble(String input) {
-            if (input.length() == 0) {
-                return 0d;
-            }
-
-            return Double.parseDouble(input);
-        }
-
-        static CoordinateParseResult parse(String input) {
-            if (input.startsWith("~")) {
-                return new CoordinateParseResult(parseDouble(input.substring(1)), true);
-            } else {
-                return new CoordinateParseResult(parseDouble(input), false);
-            }
-        }
-
-        private CoordinateParseResult(double coordinate, boolean isRelative) {
-            this.coordinate = coordinate;
-            this.relative = isRelative;
-        }
-    }
-
     private double x, y, z;
     private boolean xRelative, yRelative, zRelative;
-
     public WorldCoordinates(StringReader reader) throws CommandSyntaxException {
         readCoordinate(reader, x -> this.x = x, f -> this.xRelative = f);
         reader.skipWhitespace();
@@ -97,5 +70,31 @@ public class WorldCoordinates extends Coordinates {
     @Override
     public String toString() {
         return "WorldCoordinates[" + (xRelative ? "~" : "") + x + ", " + (yRelative ? "~" : "") + y + ", " + (zRelative ? "~" : "") + z + "]";
+    }
+
+    private static class CoordinateParseResult {
+        final double coordinate;
+        final boolean relative;
+
+        private CoordinateParseResult(double coordinate, boolean isRelative) {
+            this.coordinate = coordinate;
+            this.relative = isRelative;
+        }
+
+        private static double parseDouble(String input) {
+            if (input.length() == 0) {
+                return 0d;
+            }
+
+            return Double.parseDouble(input);
+        }
+
+        static CoordinateParseResult parse(String input) {
+            if (input.startsWith("~")) {
+                return new CoordinateParseResult(parseDouble(input.substring(1)), true);
+            } else {
+                return new CoordinateParseResult(parseDouble(input), false);
+            }
+        }
     }
 }
