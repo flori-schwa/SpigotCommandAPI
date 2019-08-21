@@ -1,4 +1,4 @@
-package me.florian.command.brigadier;
+package me.florian.command.brigadier.argument;
 
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.StringReader;
