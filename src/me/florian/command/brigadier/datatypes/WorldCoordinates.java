@@ -14,14 +14,13 @@ public class WorldCoordinates extends Coordinates {
 
     private double x, y, z;
     private boolean xRelative, yRelative, zRelative;
+
     public WorldCoordinates(StringReader reader) throws CommandSyntaxException {
         readCoordinate(reader, x -> this.x = x, f -> this.xRelative = f);
         reader.skipWhitespace();
         readCoordinate(reader, y -> this.y = y, f -> this.yRelative = f);
         reader.skipWhitespace();
         readCoordinate(reader, z -> this.z = z, f -> this.zRelative = f);
-
-        System.out.println(this);
     }
 
     private void readCoordinate(StringReader reader, DoubleConsumer coordinateSetter, Consumer<Boolean> flagSetter) throws CommandSyntaxException {
@@ -31,19 +30,12 @@ public class WorldCoordinates extends Coordinates {
             flagSetter.accept(true);
 
             if (StringReader.isAllowedNumber(reader.peek())) {
-                double read = reader.readDouble();
-                coordinateSetter.accept(read);
-
-                System.out.println("Relative coordinate: ~" + read);
+                coordinateSetter.accept(reader.readDouble());
             } else {
                 coordinateSetter.accept(0d);
-                System.out.println("Relative coordinate: ~0");
             }
         } else {
-            double read = reader.readDouble();
-            coordinateSetter.accept(read);
-
-            System.out.println("Absolute coordinate: " + read);
+            coordinateSetter.accept(reader.readDouble());
         }
     }
 

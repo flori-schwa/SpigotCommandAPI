@@ -22,12 +22,9 @@ public class PositionArgumentType implements ArgumentType<Coordinates> {
 
     @Override
     public Coordinates parse(StringReader stringReader) throws CommandSyntaxException {
-        // Todo implement ~n and ^n
         if (stringReader.peek() == '^') {
-            System.out.println("Returning Caret Coordinates");
             return new CaretCoordinates(stringReader);
         } else {
-            System.out.println("Returning World Coordinates");
             return new WorldCoordinates(stringReader);
         }
     }

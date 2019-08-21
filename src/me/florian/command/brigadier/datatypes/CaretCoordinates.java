@@ -41,8 +41,6 @@ public class CaretCoordinates extends Coordinates {
         this.up = parseCaret(stringReader);
         stringReader.skipWhitespace();
         this.forwards = parseCaret(stringReader);
-
-        System.out.println(this);
     }
 
     private static float sin(float x) {
@@ -68,16 +66,7 @@ public class CaretCoordinates extends Coordinates {
 
         reader.skip(); // Caret has been verified
 
-        final double coordinate;
-
-        if (StringReader.isAllowedNumber(reader.peek())) {
-            coordinate = reader.readDouble();
-        } else {
-            coordinate = 0;
-        }
-
-        System.out.println("Caret coordinate: ^" + coordinate);
-        return coordinate;
+        return StringReader.isAllowedNumber(reader.peek()) ? reader.readDouble() : 0d;
     }
 
     private double parseDouble(String input) {
