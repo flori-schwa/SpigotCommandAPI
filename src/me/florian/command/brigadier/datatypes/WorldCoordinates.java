@@ -71,30 +71,4 @@ public class WorldCoordinates extends Coordinates {
     public String toString() {
         return "WorldCoordinates[" + (xRelative ? "~" : "") + x + ", " + (yRelative ? "~" : "") + y + ", " + (zRelative ? "~" : "") + z + "]";
     }
-
-    private static class CoordinateParseResult {
-        final double coordinate;
-        final boolean relative;
-
-        private CoordinateParseResult(double coordinate, boolean isRelative) {
-            this.coordinate = coordinate;
-            this.relative = isRelative;
-        }
-
-        private static double parseDouble(String input) {
-            if (input.length() == 0) {
-                return 0d;
-            }
-
-            return Double.parseDouble(input);
-        }
-
-        static CoordinateParseResult parse(String input) {
-            if (input.startsWith("~")) {
-                return new CoordinateParseResult(parseDouble(input.substring(1)), true);
-            } else {
-                return new CoordinateParseResult(parseDouble(input), false);
-            }
-        }
-    }
 }
