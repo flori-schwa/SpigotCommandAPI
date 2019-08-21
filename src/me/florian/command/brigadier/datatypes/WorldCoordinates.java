@@ -10,7 +10,7 @@ import org.bukkit.entity.LivingEntity;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 
-public class WorldCoordinates extends Coordinates {
+public class WorldCoordinates implements ICoordinates {
 
     private double x, y, z;
     private boolean xRelative, yRelative, zRelative;

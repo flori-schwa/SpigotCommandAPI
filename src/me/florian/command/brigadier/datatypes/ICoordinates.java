@@ -4,8 +4,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 
-public abstract class Coordinates {
+public interface ICoordinates {
 
-    public abstract Location toLocation(CommandSender source) throws CommandSyntaxException;
+    Location toLocation(CommandSender source) throws CommandSyntaxException;
 
 }

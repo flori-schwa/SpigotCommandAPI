@@ -8,20 +8,20 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import me.florian.command.CommandSuggestions;
 import me.florian.command.brigadier.datatypes.CaretCoordinates;
-import me.florian.command.brigadier.datatypes.Coordinates;
+import me.florian.command.brigadier.datatypes.ICoordinates;
 import me.florian.command.brigadier.datatypes.WorldCoordinates;
 import org.bukkit.entity.Entity;
 
 import java.util.concurrent.CompletableFuture;
 
-public class PositionArgumentType implements ArgumentType<Coordinates> {
+public class PositionArgumentType implements ArgumentType<ICoordinates> {
 
     public static PositionArgumentType position() {
         return new PositionArgumentType();
     }
 
     @Override
-    public Coordinates parse(StringReader stringReader) throws CommandSyntaxException {
+    public ICoordinates parse(StringReader stringReader) throws CommandSyntaxException {
         if (stringReader.peek() == '^') {
             return new CaretCoordinates(stringReader);
         } else {

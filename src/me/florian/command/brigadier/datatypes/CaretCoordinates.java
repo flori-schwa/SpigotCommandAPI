@@ -12,7 +12,7 @@ import org.bukkit.util.Vector;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class CaretCoordinates extends Coordinates {
+public class CaretCoordinates implements ICoordinates {
 
     public static final float DEG_TO_RAD = (float) (Math.PI / 180d);
 
