@@ -37,7 +37,7 @@ public class CommandSuggestions {
 
     /**
      * @param commandSender The Source of tab completion
-     * @param args          Thr arguments that have been typed already.
+     * @param args          The arguments that have been typed already.
      */
     public CommandSuggestions(CommandSender commandSender, String[] args) {
         this.commandSender = commandSender;

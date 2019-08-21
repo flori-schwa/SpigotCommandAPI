@@ -1,9 +1,11 @@
 package me.florian.command.brigadier;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
 import me.florian.command.AbstractCommand;
@@ -21,6 +23,10 @@ public class BrigadierCommand<C extends CommandSender> extends AbstractCommand {
 
     private final CommandDispatcher<C> commandDispatcher;
     private final Class<C> cClass;
+
+    public static CommandSyntaxException literal(String message) {
+        return new SimpleCommandExceptionType(new LiteralMessage(message)).create();
+    }
 
     public BrigadierCommand(Plugin plugin, LiteralArgumentBuilder<C> literalArgumentBuilder, Class<C> cClass) {
         super(plugin, literalArgumentBuilder.getLiteral());
@@ -78,4 +84,5 @@ public class BrigadierCommand<C extends CommandSender> extends AbstractCommand {
             e.printStackTrace();
         }
     }
+
 }
