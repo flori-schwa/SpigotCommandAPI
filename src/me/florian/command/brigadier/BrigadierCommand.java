@@ -16,21 +16,21 @@ import me.florian.command.result.CommandResult;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-public class BrigadierCommand<C extends CommandSender> extends AbstractCommand {
+public abstract class BrigadierCommand<C extends CommandSender> extends AbstractCommand {
 
     private final CommandDispatcher<C> commandDispatcher;
     private final Class<C> cClass;
 
-    public BrigadierCommand(Plugin plugin, LiteralArgumentBuilder<C> literalArgumentBuilder, Class<C> cClass) {
-        super(plugin, literalArgumentBuilder.getLiteral());
+    public BrigadierCommand(Plugin plugin, String name, Class<C> cClass) {
+        super(plugin, name);
 
         this.cClass = cClass;
-
         this.commandDispatcher = new CommandDispatcher<>();
-        this.commandDispatcher.register(literalArgumentBuilder);
+        this.commandDispatcher.register(buildCommand(buildRootNode(getName())));
     }
 
     public static CommandSyntaxException literal(String message) {
@@ -45,6 +45,12 @@ public class BrigadierCommand<C extends CommandSender> extends AbstractCommand {
         }
 
         return builder.toString();
+    }
+
+    protected abstract LiteralArgumentBuilder<C> buildCommand(LiteralArgumentBuilder<C> baseNode);
+
+    private LiteralArgumentBuilder<C> buildRootNode(String name) {
+        return LiteralArgumentBuilder.<C>literal(name).requires(c -> c.hasPermission(Optional.ofNullable(getRequiredPermission()).orElse("")));
     }
 
     private String getFullInput(ArgumentIterator args) {

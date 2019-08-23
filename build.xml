@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="SpigotCommandApi" default="jar">
+
+    <available file=".git" type="dir" property="git.present"/>
+
+    <property name="build" location="build"/>
+    <property name="dist" location="dist"/>
+    <property name="src" location="src"/>
+
+    <property name="lib-dir" location="lib" />
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+
+    <target name="init" depends="clean">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="git-rev" if="git.present">
+        <exec executable="git" outputproperty="git.rev" failifexecutionfails="false" errorproperty="">
+            <arg value="rev-parse"/>
+            <arg value="--short"/>
+            <arg value="HEAD"/>
+        </exec>
+
+        <condition property="api.version" value="${git.rev}" else="unknown">
+            <and>
+                <isset property="git.rev"/>
+
+                <not>
+                    <isset property="api.version"/>
+                </not>
+            </and>
+        </condition>
+    </target>
+
+    <target name="build" depends="init, git-rev">
+        <condition property="api.version.set">
+            <isset property="api.version"/>
+        </condition>
+
+        <fail message="api.version not set!" unless="api.version.set"/>
+
+        <javac srcdir="${src}" destdir="${build}">
+            <classpath>
+                <fileset file="${lib-dir}">
+                    <include name="**/spigot-1.14.4.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="jar" depends="build">
+        <jar destfile="${dist}/SpigotCommandApi-${api.version}.jar" basedir="${build}" />
+    </target>
+</project>
