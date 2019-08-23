@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -19,7 +20,7 @@ import java.util.stream.Stream;
 /**
  * Represents a Custom Command. The command will register itself during Runtime. no entries are required in config.yml
  */
-public abstract class AbstractCommand {
+public abstract class AbstractCommand<P extends JavaPlugin> {
 
     private static Field simpleCommandMapField;
     private static Constructor<PluginCommand> pluginCommandConstructor;
@@ -37,9 +38,9 @@ public abstract class AbstractCommand {
     }
 
     private final String name;
-    private final Plugin plugin;
+    protected final P plugin;
 
-    public AbstractCommand(Plugin plugin, String name) {
+    public AbstractCommand(P plugin, String name) {
         this.plugin = plugin;
         this.name = name;
 
@@ -83,9 +84,9 @@ public abstract class AbstractCommand {
     }
 
     /**
-     * @return the {@link Plugin} this command belongs to
+     * @return the {@link JavaPlugin} this command belongs to
      */
-    public final Plugin getPlugin() {
+    public final P getPlugin() {
         return plugin;
     }
 

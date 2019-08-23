@@ -14,18 +14,18 @@ import me.florian.command.CommandSuggestions;
 import me.florian.command.exception.CommandException;
 import me.florian.command.result.CommandResult;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-public abstract class BrigadierCommand<C extends CommandSender> extends AbstractCommand {
+public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPlugin> extends AbstractCommand<P> {
 
     private final CommandDispatcher<C> commandDispatcher;
     private final Class<C> cClass;
 
-    public BrigadierCommand(Plugin plugin, String name, Class<C> cClass) {
+    public BrigadierCommand(P plugin, String name, Class<C> cClass) {
         super(plugin, name);
 
         this.cClass = cClass;
