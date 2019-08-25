@@ -96,7 +96,7 @@ public class CaretCoordinates implements ICoordinates {
         // I have no idea how this math works, just ripped from ArgumentVectorPosition#a(CommandListenerWrapper)
 
         final float var3 = cos((yaw + 90f) * DEG_TO_RAD);
-        final float var4 = cos((yaw + 90f) * DEG_TO_RAD);
+        final float var4 = sin((yaw + 90f) * DEG_TO_RAD);
 
         final float var5 = cos(-pitch * DEG_TO_RAD);
         final float var6 = sin(-pitch * DEG_TO_RAD);
