@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPlugin> extends AbstractCommand<P> {
 
-    private final CommandDispatcher<C> commandDispatcher;
+    protected final CommandDispatcher<C> commandDispatcher;
     private final Class<C> cClass;
     private boolean built = false;
 
@@ -64,7 +64,7 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
 
     protected abstract LiteralArgumentBuilder<C> buildCommand(LiteralArgumentBuilder<C> baseNode);
 
-    private LiteralArgumentBuilder<C> buildRootNode(String name) {
+    protected LiteralArgumentBuilder<C> buildRootNode(String name) {
         return LiteralArgumentBuilder.<C>literal(name).requires(c -> {
             String required = getRequiredPermission();
 
@@ -76,7 +76,7 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
         });
     }
 
-    private String getFullInput(ArgumentIterator args) {
+    protected final String getFullInput(ArgumentIterator args) {
         return getFullInput(args.getArguments());
     }
 
