@@ -7,7 +7,10 @@
     <property name="dist" location="dist"/>
     <property name="src" location="src"/>
 
-    <property name="lib-dir" location="lib" />
+    <property name="lib-dir" location="lib"/>
+
+    <property name="javac-debug" value="off"/>
+    <property name="javac-debug-level" value="none"/>
 
     <target name="clean">
         <delete dir="${build}"/>
@@ -44,16 +47,34 @@
 
         <fail message="api.version not set!" unless="api.version.set"/>
 
-        <javac srcdir="${src}" destdir="${build}">
+        <javac
+                srcdir="${src}"
+                destdir="${build}"
+                source="8"
+                target="8"
+                debug="${javac-debug}"
+                debuglevel="${javac-debug-level}"
+        >
             <classpath>
                 <fileset file="${lib-dir}">
                     <include name="**/spigot-1.14.4.jar"/>
+                    <include name="**/annotations-17.0.0.jar"/>
                 </fileset>
             </classpath>
         </javac>
     </target>
 
     <target name="jar" depends="build">
-        <jar destfile="${dist}/SpigotCommandApi-${api.version}.jar" basedir="${build}" />
+        <jar destfile="${dist}/SpigotCommandApi-${api.version}.jar" basedir="${build}"/>
+
+        <jar destfile="${dist}/SpigotCommandApi-${api.version}-with-annotations.jar">
+            <zipgroupfileset dir="${dist}">
+                <include name="SpigotCommandApi-${api.version}.jar"/>
+            </zipgroupfileset>
+
+            <zipgroupfileset dir="lib">
+                <include name="annotations-17.0.0.jar"/>
+            </zipgroupfileset>
+        </jar>
     </target>
 </project>

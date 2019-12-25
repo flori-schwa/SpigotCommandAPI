@@ -104,14 +104,14 @@ public class CaretCoordinates implements ICoordinates {
         final float var7 = cos((-pitch + 90f) * DEG_TO_RAD);
         final float var8 = sin((-pitch + 90f) * DEG_TO_RAD);
 
-        final Vector var9 = new Vector(var3 * var5, var6, var4 * var5);
-        final Vector var10 = new Vector(var3 * var7, var8, var4 * var7);
+        final Vector er = new Vector(var3 * var5, var6, var4 * var5);
+        final Vector minusEt = new Vector(var3 * var7, var8, var4 * var7);
 
-        final Vector var11 = var9.clone().crossProduct(var10).multiply(-1);
+        final Vector var11 = er.clone().crossProduct(minusEt).multiply(-1);
 
-        final double deltaX = var9.getX() * forwards + var10.getX() * up + var11.getX() * left;
-        final double deltaY = var9.getY() * forwards + var10.getY() * up + var11.getY() * left;
-        final double deltaZ = var9.getZ() * forwards + var10.getZ() * up + var11.getZ() * left;
+        final double deltaX = er.getX() * forwards + minusEt.getX() * up + var11.getX() * left;
+        final double deltaY = er.getY() * forwards + minusEt.getY() * up + var11.getY() * left;
+        final double deltaZ = er.getZ() * forwards + minusEt.getZ() * up + var11.getZ() * left;
 
         return new Location(null, x + deltaX, y + deltaY, z + deltaZ);
     }

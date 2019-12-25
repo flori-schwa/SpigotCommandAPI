@@ -15,6 +15,7 @@ import me.florian.command.exception.CommandException;
 import me.florian.command.result.CommandResult;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -24,17 +25,32 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
 
     private final CommandDispatcher<C> commandDispatcher;
     private final Class<C> cClass;
+    private boolean built = false;
 
-    public BrigadierCommand(P plugin, String name, Class<C> cClass) {
+    public BrigadierCommand(P plugin, String name, Class<C> cClass, boolean lateBuild) {
         super(plugin, name);
 
         this.cClass = cClass;
         this.commandDispatcher = new CommandDispatcher<>();
-        this.commandDispatcher.register(buildCommand(buildRootNode(getName())));
+
+        if (!lateBuild) {
+            build();
+        }
+    }
+
+    public BrigadierCommand(P plugin, String name, Class<C> cClass) {
+        this(plugin, name, cClass, false);
     }
 
     public static CommandSyntaxException literal(String message) {
         return new SimpleCommandExceptionType(new LiteralMessage(message)).create();
+    }
+
+    public synchronized void build() {
+        if (!built) {
+            this.commandDispatcher.register(buildCommand(buildRootNode(getName())));
+            built = true;
+        }
     }
 
     private String getFullInput(String[] args) {
@@ -57,6 +73,7 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
         return getFullInput(args.getArguments());
     }
 
+    @NotNull
     @Override
     public final String[] getAliases() {
         return new String[0];

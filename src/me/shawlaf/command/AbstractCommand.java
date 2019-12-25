@@ -1,14 +1,17 @@
-package me.florian.command;
+package me.shawlaf.command;
 
-import me.florian.command.exception.CommandException;
-import me.florian.command.result.*;
+import me.shawlaf.command.exception.CommandException;
+import me.shawlaf.command.result.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -20,7 +23,7 @@ import java.util.stream.Stream;
 /**
  * Represents a Custom Command. The command will register itself during Runtime. no entries are required in config.yml
  */
-public abstract class AbstractCommand<P extends JavaPlugin> {
+public abstract class AbstractCommand<P extends JavaPlugin> implements ICommandAccess<P> {
 
     private static Field simpleCommandMapField;
     private static Constructor<PluginCommand> pluginCommandConstructor;
@@ -37,8 +40,8 @@ public abstract class AbstractCommand<P extends JavaPlugin> {
         }
     }
 
-    private final String name;
     protected final P plugin;
+    private final String name;
 
     public AbstractCommand(P plugin, String name) {
         this.plugin = plugin;
@@ -83,16 +86,16 @@ public abstract class AbstractCommand<P extends JavaPlugin> {
         }
     }
 
-    /**
-     * @return the {@link JavaPlugin} this command belongs to
-     */
+
+    @NotNull
+    @Override
     public final P getPlugin() {
         return plugin;
     }
 
-    /**
-     * @return The Usage string in the format {@code /<name> <syntax>: <description>}
-     */
+
+    @NotNull
+    @Override
     public final String getUsageString() {
         StringBuilder builder = new StringBuilder("/");
 
@@ -107,37 +110,36 @@ public abstract class AbstractCommand<P extends JavaPlugin> {
         return builder.toString();
     }
 
-    /**
-     * @return The name of the command
-     */
+
+    @NotNull
+    @Override
     public final String getName() {
         return name;
     }
 
-    /**
-     * @return The permission node required to run this command
-     */
+    @Override
+    @Nullable
     public String getRequiredPermission() {
         return null;
     }
 
-    /**
-     * @return The description of this command
-     */
+
+    @NotNull
+    @Override
     public String getDescription() {
         return "";
     }
 
-    /**
-     * @return The Syntax of this command. A list of arguments.
-     */
+
+    @NotNull
+    @Override
     public String getSyntax() {
         return "";
     }
 
-    /**
-     * @return A list of alternate command names that can be used instead of {@link AbstractCommand#getName()}
-     */
+
+    @NotNull
+    @Override
     public String[] getAliases() {
         return new String[0];
     }
@@ -197,6 +199,14 @@ public abstract class AbstractCommand<P extends JavaPlugin> {
         }
 
         throw CommandException.mildException(message);
+    }
+
+    protected CommandResult info(String message, ChatColor chatColor) {
+        return new CommandResultInfo(this, message, chatColor);
+    }
+
+    protected CommandResult info(String message) {
+        return info(message, ChatColor.WHITE);
     }
 
     protected CommandResult failure(String message) {

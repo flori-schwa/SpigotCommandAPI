@@ -1,4 +1,4 @@
-package me.florian.command;
+package me.shawlaf.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.FluidCollisionMode;

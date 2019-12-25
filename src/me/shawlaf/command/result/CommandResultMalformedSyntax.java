@@ -1,11 +1,11 @@
-package me.florian.command.result;
+package me.shawlaf.command.result;
 
-import me.florian.command.AbstractCommand;
+import me.shawlaf.command.ICommandAccess;
 import org.bukkit.command.CommandSender;
 
 public class CommandResultMalformedSyntax extends CommandResult {
 
-    public CommandResultMalformedSyntax(AbstractCommand command) {
+    public CommandResultMalformedSyntax(ICommandAccess<?> command) {
         super(command);
     }
 

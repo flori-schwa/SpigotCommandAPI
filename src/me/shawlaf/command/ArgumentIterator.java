@@ -1,4 +1,4 @@
-package me.florian.command;
+package me.shawlaf.command;
 
 import java.util.Arrays;
 import java.util.Iterator;

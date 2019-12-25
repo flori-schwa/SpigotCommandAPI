@@ -1,6 +1,6 @@
-package me.florian.command.result;
+package me.shawlaf.command.result;
 
-import me.florian.command.AbstractCommand;
+import me.shawlaf.command.ICommandAccess;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -14,11 +14,11 @@ public class CommandResultSuccessBroadcast extends CommandResult {
     private final String message;
     private final String node;
 
-    public CommandResultSuccessBroadcast(AbstractCommand command, String message) {
+    public CommandResultSuccessBroadcast(ICommandAccess<?> command, String message) {
         this(command, message, command.getRequiredPermission());
     }
 
-    public CommandResultSuccessBroadcast(AbstractCommand command, String message, String node) {
+    public CommandResultSuccessBroadcast(ICommandAccess<?> command, String message, String node) {
         super(command);
 
         this.message = message;
