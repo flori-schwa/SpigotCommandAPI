@@ -1,7 +1,7 @@
 package me.shawlaf.command;
 
+import me.shawlaf.command.raytrace.PlayerRaytrace;
 import org.bukkit.Bukkit;
-import org.bukkit.FluidCollisionMode;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -197,7 +197,7 @@ public class CommandSuggestions {
     }
 
     private int[] getCoordinatesLookingAt(Player player) {
-        Block targetBlock = player.getTargetBlockExact(10, FluidCollisionMode.NEVER);
+        Block targetBlock = PlayerRaytrace.getTargetBlock(player, 10);
 
         if (targetBlock == null) {
             return new int[0];
