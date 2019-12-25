@@ -1,4 +1,4 @@
-package me.florian.command.brigadier;
+package me.shawlaf.command.brigadier;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
@@ -8,16 +8,15 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
-import me.florian.command.AbstractCommand;
-import me.florian.command.ArgumentIterator;
-import me.florian.command.CommandSuggestions;
-import me.florian.command.exception.CommandException;
-import me.florian.command.result.CommandResult;
+import me.shawlaf.command.AbstractCommand;
+import me.shawlaf.command.ArgumentIterator;
+import me.shawlaf.command.CommandSuggestions;
+import me.shawlaf.command.exception.CommandException;
+import me.shawlaf.command.result.CommandResult;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -66,7 +65,15 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
     protected abstract LiteralArgumentBuilder<C> buildCommand(LiteralArgumentBuilder<C> baseNode);
 
     private LiteralArgumentBuilder<C> buildRootNode(String name) {
-        return LiteralArgumentBuilder.<C>literal(name).requires(c -> c.hasPermission(Optional.ofNullable(getRequiredPermission()).orElse("")));
+        return LiteralArgumentBuilder.<C>literal(name).requires(c -> {
+            String required = getRequiredPermission();
+
+            if (required == null || required.isEmpty()) {
+                return true;
+            }
+
+            return c.hasPermission(required);
+        });
     }
 
     private String getFullInput(ArgumentIterator args) {
@@ -80,7 +87,7 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
     }
 
     @Override
-    public final CommandResult execute(CommandSender sender, ArgumentIterator args) {
+    public CommandResult execute(CommandSender sender, ArgumentIterator args) {
         C source = assertSenderInstanceOf(sender, cClass);
 
         ParseResults<C> parseResults = commandDispatcher.parse(getFullInput(args), source);
@@ -95,9 +102,10 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
     }
 
     @Override
-    public final void tabComplete(CommandSuggestions suggestions) {
+    public void tabComplete(CommandSuggestions suggestions) {
         try {
             C source = assertSenderInstanceOf(suggestions.getCommandSender(), cClass);
+
             Suggestions result = commandDispatcher.getCompletionSuggestions(commandDispatcher.parse(getFullInput(suggestions.getArguments()), source)).get();
 
             suggestions.add(result.getList().stream().map(Suggestion::getText).collect(Collectors.toSet()));

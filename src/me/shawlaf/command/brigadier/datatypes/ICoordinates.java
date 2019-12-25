@@ -1,4 +1,4 @@
-package me.florian.command.brigadier.datatypes;
+package me.shawlaf.command.brigadier.datatypes;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.bukkit.Location;

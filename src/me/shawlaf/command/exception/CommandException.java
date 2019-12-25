@@ -1,12 +1,13 @@
-package me.florian.command.exception;
+package me.shawlaf.command.exception;
 
-import me.florian.command.ArgumentIterator;
+import me.shawlaf.command.ArgumentIterator;
+import me.shawlaf.command.AbstractCommand;
 import org.bukkit.command.CommandSender;
 
 /**
- * This throwable class represents a {@link RuntimeException} involving the execution of {@link me.florian.command.AbstractCommand}'s
- * If an Exception of this Type is thrown during the execution of a {@link me.florian.command.AbstractCommand} ({@link me.florian.command.AbstractCommand#execute(CommandSender, ArgumentIterator)}),
- * the execution will stop and the {@link Exception#getMessage()} will be printed to the {@link me.florian.command.AbstractCommand}'s {@link CommandSender}.
+ * This throwable class represents a {@link RuntimeException} involving the execution of {@link AbstractCommand}'s
+ * If an Exception of this Type is thrown during the execution of a {@link AbstractCommand} ({@link AbstractCommand#execute(CommandSender, ArgumentIterator)}),
+ * the execution will stop and the {@link Exception#getMessage()} will be printed to the {@link AbstractCommand}'s {@link CommandSender}.
  * <p>
  * There are two Types of {@link CommandException}s: severe and mild.
  * <ul>

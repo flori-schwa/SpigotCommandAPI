@@ -1,8 +1,8 @@
-package me.florian.command.brigadier.datatypes;
+package me.shawlaf.command.brigadier.datatypes;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import me.florian.command.brigadier.BrigadierCommand;
+import me.shawlaf.command.brigadier.BrigadierCommand;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;

@@ -1,4 +1,4 @@
-package me.florian.command.brigadier.argument;
+package me.shawlaf.command.brigadier.argument;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
@@ -6,10 +6,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import me.florian.command.CommandSuggestions;
-import me.florian.command.brigadier.datatypes.CaretCoordinates;
-import me.florian.command.brigadier.datatypes.ICoordinates;
-import me.florian.command.brigadier.datatypes.WorldCoordinates;
+import me.shawlaf.command.CommandSuggestions;
+import me.shawlaf.command.brigadier.datatypes.CaretCoordinates;
+import me.shawlaf.command.brigadier.datatypes.ICoordinates;
+import me.shawlaf.command.brigadier.datatypes.WorldCoordinates;
 import org.bukkit.entity.Entity;
 
 import java.util.concurrent.CompletableFuture;
