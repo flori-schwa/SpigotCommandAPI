@@ -9,8 +9,8 @@
 
     <property name="lib-dir" location="lib"/>
 
-    <property name="javac-debug" value="off"/>
-    <property name="javac-debug-level" value="none"/>
+    <property name="javac-debug" value="true"/>
+    <property name="javac-debug-level" value="source,vars,lines"/>
 
     <target name="clean">
         <delete dir="${build}"/>
@@ -54,6 +54,8 @@
                 target="8"
                 debug="${javac-debug}"
                 debuglevel="${javac-debug-level}"
+                compiler="modern"
+                includeantruntime="false"
         >
             <classpath>
                 <fileset file="${lib-dir}">

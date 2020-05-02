@@ -4,19 +4,24 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.ParsedCommandNode;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.tree.CommandNode;
 import me.shawlaf.command.AbstractCommand;
 import me.shawlaf.command.ArgumentIterator;
 import me.shawlaf.command.CommandSuggestions;
 import me.shawlaf.command.exception.CommandException;
 import me.shawlaf.command.result.CommandResult;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -95,7 +100,30 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
         try {
             commandDispatcher.execute(parseResults);
         } catch (CommandSyntaxException e) {
-            throw CommandException.mildException(e.getMessage(), e);
+
+            List<ParsedCommandNode<C>> parsedNodes = parseResults.getContext().getNodes();
+
+            ParsedCommandNode<C> deepestNode = parsedNodes.get(0);
+
+            for (int i = 1; i < parsedNodes.size(); i++) {
+                if (parsedNodes.get(i).getRange().getStart() > deepestNode.getRange().getStart()) {
+                    deepestNode = parsedNodes.get(i);
+                }
+            }
+
+            String base = "/" + String.join(" ", commandDispatcher.getPath(deepestNode.getNode()));
+
+            failure(e.getMessage()).finish(source);
+
+            source.sendMessage("");
+
+            info("Usage of " + base + ":", ChatColor.RED).finish(source);
+
+            Map<CommandNode<C>, String> usage = commandDispatcher.getSmartUsage(deepestNode.getNode(), source);
+
+            for (CommandNode<C> child : usage.keySet()) {
+                source.sendMessage(ChatColor.RED + base + " " + usage.get(child));
+            }
         }
 
         return null;
