@@ -1,5 +1,6 @@
 package me.shawlaf.command;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,6 +21,11 @@ public interface ICommandAccess<P extends Plugin> {
      * @return The Usage string in the format {@code /<name> <syntax>: <description>}
      */
     @NotNull String getUsageString();
+
+    /**
+     * @return The Usage String for the specified {@link CommandSender}
+     */
+    @NotNull String getUsageString(CommandSender commandSender);
 
     /**
      * @return The permission node required to run this command

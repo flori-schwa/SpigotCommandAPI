@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +22,7 @@ import java.util.stream.Stream;
 /**
  * Represents a Custom Command. The command will register itself during Runtime. no entries are required in config.yml
  */
-public abstract class AbstractCommand<P extends JavaPlugin> implements ICommandAccess<P> {
+public abstract class AbstractCommand<P extends Plugin> implements ICommandAccess<P> {
 
     private static Field simpleCommandMapField;
     private static Constructor<PluginCommand> pluginCommandConstructor;
@@ -44,9 +43,19 @@ public abstract class AbstractCommand<P extends JavaPlugin> implements ICommandA
     private final String name;
 
     public AbstractCommand(P plugin, String name) {
+        this(plugin, name, true);
+    }
+
+    public AbstractCommand(P plugin, String name, boolean registerNow) {
         this.plugin = plugin;
         this.name = name;
 
+        if (registerNow) {
+            register();
+        }
+    }
+
+    protected void register() {
         try {
             final PluginCommand pluginCommand = pluginCommandConstructor.newInstance(getName(), plugin);
 
@@ -96,12 +105,17 @@ public abstract class AbstractCommand<P extends JavaPlugin> implements ICommandA
 
     @NotNull
     @Override
-    public final String getUsageString() {
+    public String getUsageString() {
+        return getUsageString(Bukkit.getConsoleSender());
+    }
+
+    @Override
+    public @NotNull String getUsageString(CommandSender commandSender) {
         StringBuilder builder = new StringBuilder("/");
 
         builder.append(getName());
 
-        if (getSyntax() != null && !getSyntax().isEmpty()) {
+        if (!getSyntax().isEmpty()) {
             builder.append(" ").append(getSyntax());
         }
 
@@ -109,7 +123,6 @@ public abstract class AbstractCommand<P extends JavaPlugin> implements ICommandA
 
         return builder.toString();
     }
-
 
     @NotNull
     @Override

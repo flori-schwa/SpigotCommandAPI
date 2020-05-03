@@ -17,7 +17,7 @@ import me.shawlaf.command.exception.CommandException;
 import me.shawlaf.command.result.CommandResult;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -25,16 +25,15 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
-public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPlugin> extends AbstractCommand<P> {
+public abstract class BrigadierCommand<P extends Plugin> extends AbstractCommand<P> {
 
-    protected final CommandDispatcher<C> commandDispatcher;
-    private final Class<C> cClass;
+    protected final CommandDispatcher<CommandSender> commandDispatcher;
+    private CommandNode<CommandSender> rootNode;
     private boolean built = false;
 
-    public BrigadierCommand(P plugin, String name, Class<C> cClass, boolean lateBuild) {
-        super(plugin, name);
+    public BrigadierCommand(P plugin, String name, boolean lateBuild) {
+        super(plugin, name, false);
 
-        this.cClass = cClass;
         this.commandDispatcher = new CommandDispatcher<>();
 
         if (!lateBuild) {
@@ -42,8 +41,8 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
         }
     }
 
-    public BrigadierCommand(P plugin, String name, Class<C> cClass) {
-        this(plugin, name, cClass, false);
+    public BrigadierCommand(P plugin, String name) {
+        this(plugin, name, false);
     }
 
     public static CommandSyntaxException literal(String message) {
@@ -53,6 +52,10 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
     public synchronized void build() {
         if (!built) {
             this.commandDispatcher.register(buildCommand(buildRootNode(getName())));
+            this.rootNode = commandDispatcher.getRoot().getChildren().iterator().next();
+
+            register();
+
             built = true;
         }
     }
@@ -67,10 +70,10 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
         return builder.toString();
     }
 
-    protected abstract LiteralArgumentBuilder<C> buildCommand(LiteralArgumentBuilder<C> baseNode);
+    protected abstract LiteralArgumentBuilder<CommandSender> buildCommand(LiteralArgumentBuilder<CommandSender> baseNode);
 
-    protected LiteralArgumentBuilder<C> buildRootNode(String name) {
-        return LiteralArgumentBuilder.<C>literal(name).requires(c -> {
+    protected LiteralArgumentBuilder<CommandSender> buildRootNode(String name) {
+        return LiteralArgumentBuilder.<CommandSender>literal(name).requires(c -> {
             String required = getRequiredPermission();
 
             if (required == null || required.isEmpty()) {
@@ -92,18 +95,28 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
     }
 
     @Override
-    public CommandResult execute(CommandSender sender, ArgumentIterator args) {
-        C source = assertSenderInstanceOf(sender, cClass);
+    public @NotNull String getSyntax() {
+        return "";
+    }
 
-        ParseResults<C> parseResults = commandDispatcher.parse(getFullInput(args), source);
+    @Override
+    public @NotNull String getUsageString(CommandSender commandSender) {
+        Map<CommandNode<CommandSender>, String> smartUsage = commandDispatcher.getSmartUsage(commandDispatcher.getRoot(), commandSender);
+
+        return "/" + smartUsage.get(smartUsage.keySet().iterator().next());
+    }
+
+    @Override
+    public CommandResult execute(CommandSender sender, ArgumentIterator args) {
+        ParseResults<CommandSender> parseResults = commandDispatcher.parse(getFullInput(args), sender);
 
         try {
             commandDispatcher.execute(parseResults);
         } catch (CommandSyntaxException e) {
 
-            List<ParsedCommandNode<C>> parsedNodes = parseResults.getContext().getNodes();
+            List<ParsedCommandNode<CommandSender>> parsedNodes = parseResults.getContext().getNodes();
 
-            ParsedCommandNode<C> deepestNode = parsedNodes.get(0);
+            ParsedCommandNode<CommandSender> deepestNode = parsedNodes.get(0);
 
             for (int i = 1; i < parsedNodes.size(); i++) {
                 if (parsedNodes.get(i).getRange().getStart() > deepestNode.getRange().getStart()) {
@@ -113,16 +126,16 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
 
             String base = "/" + String.join(" ", commandDispatcher.getPath(deepestNode.getNode()));
 
-            failure(e.getMessage()).finish(source);
+            failure(e.getMessage()).finish(sender);
 
-            source.sendMessage("");
+            sender.sendMessage("");
 
-            info("Usage of " + base + ":", ChatColor.RED).finish(source);
+            info("Usage of " + base + ":", ChatColor.RED).finish(sender);
 
-            Map<CommandNode<C>, String> usage = commandDispatcher.getSmartUsage(deepestNode.getNode(), source);
+            Map<CommandNode<CommandSender>, String> usage = commandDispatcher.getSmartUsage(deepestNode.getNode(), sender);
 
-            for (CommandNode<C> child : usage.keySet()) {
-                source.sendMessage(ChatColor.RED + base + " " + usage.get(child));
+            for (CommandNode<CommandSender> child : usage.keySet()) {
+                sender.sendMessage(ChatColor.RED + base + " " + usage.get(child));
             }
         }
 
@@ -132,9 +145,7 @@ public abstract class BrigadierCommand<C extends CommandSender, P extends JavaPl
     @Override
     public void tabComplete(CommandSuggestions suggestions) {
         try {
-            C source = assertSenderInstanceOf(suggestions.getCommandSender(), cClass);
-
-            Suggestions result = commandDispatcher.getCompletionSuggestions(commandDispatcher.parse(getFullInput(suggestions.getArguments()), source)).get();
+            Suggestions result = commandDispatcher.getCompletionSuggestions(commandDispatcher.parse(getFullInput(suggestions.getArguments()), suggestions.getCommandSender())).get();
 
             suggestions.add(result.getList().stream().map(Suggestion::getText).collect(Collectors.toSet()));
         } catch (CommandException e) {
